@@ -94,6 +94,14 @@ function Login() {
             Sign up
           </Link>
         </p>
+
+        {/* Opens the admin portal, separate from a customer account. */}
+        <Link
+          to="/admin/login"
+          className="mt-4 block w-full rounded-lg border border-neutral-300 py-3.5 text-center text-sm font-semibold text-neutral-800 transition hover:border-tomato hover:text-tomato"
+        >
+          Admin login
+        </Link>
       </div>
     </section>
   )

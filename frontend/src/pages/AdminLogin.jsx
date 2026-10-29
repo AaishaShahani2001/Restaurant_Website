@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 // Fixed admin account used by this portal.
 const ADMIN_EMAIL = 'admin@tomato.example'
@@ -11,11 +12,16 @@ const field =
   'w-full rounded-lg border border-neutral-200 bg-white px-4 py-3 text-sm text-neutral-800 outline-none transition placeholder:text-neutral-400 focus:border-tomato focus:ring-2 focus:ring-tomato/20'
 
 function AdminLogin() {
-  // Email, password, field messages, and whether the admin session is active.
+  const navigate = useNavigate()
+  // Email, password, and either a field message or one form-level message.
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [errors, setErrors] = useState({})
-  const [signedIn, setSignedIn] = useState(() => sessionStorage.getItem(ADMIN_SESSION_KEY) !== null)
+
+  // Skip the form when this tab already has an admin session.
+  useEffect(() => {
+    if (sessionStorage.getItem(ADMIN_SESSION_KEY)) navigate('/admin')
+  }, [navigate])
 
   // Check the fields, then accept only the predefined admin account.
   function handleSubmit(event) {
@@ -44,15 +50,8 @@ function AdminLogin() {
 
     // Store the admin email only, never the password.
     sessionStorage.setItem(ADMIN_SESSION_KEY, JSON.stringify({ email: ADMIN_EMAIL }))
-    // Keep the admin on this portal once the predefined account matches.
-    setSignedIn(true)
-  }
-
-  // Drop the admin session and return to the login form.
-  function handleLogout() {
-    sessionStorage.removeItem(ADMIN_SESSION_KEY)
-    setSignedIn(false)
-    setPassword('')
+    // Open the admin panel after the predefined account matches.
+    navigate('/admin')
   }
 
   return (
@@ -65,20 +64,7 @@ function AdminLogin() {
           {ADMIN_EMAIL} / {ADMIN_PASSWORD}
         </p>
 
-        {/* Replace the form after the predefined account is accepted. */}
-        {signedIn ? (
-          <div className="mt-8">
-            <p className="text-sm text-neutral-800">Signed in as {ADMIN_EMAIL}.</p>
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="mt-6 w-full rounded-lg bg-tomato py-3.5 text-sm font-semibold text-white transition hover:bg-[#e84312]"
-            >
-              Log out
-            </button>
-          </div>
-        ) : (
-          <form className="mt-8 space-y-4" onSubmit={handleSubmit} noValidate>
+        <form className="mt-8 space-y-4" onSubmit={handleSubmit} noValidate>
             <div>
               <label className="sr-only" htmlFor="admin-email">
                 Admin email
@@ -122,10 +108,9 @@ function AdminLogin() {
               type="submit"
               className="w-full rounded-lg bg-tomato py-3.5 text-sm font-semibold text-white transition hover:bg-[#e84312]"
             >
-              Log in
-            </button>
-          </form>
-        )}
+            Log in
+          </button>
+        </form>
       </div>
     </section>
   )

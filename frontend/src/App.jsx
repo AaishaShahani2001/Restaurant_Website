@@ -7,6 +7,7 @@ import Navbar from './components/Navbar'
 import { AuthProvider } from './context/AuthContext'
 import { CartProvider } from './context/CartContext'
 import Home from './pages/Home'
+import AdminDashboard from './pages/AdminDashboard'
 import AdminLogin from './pages/AdminLogin'
 import Login from './pages/Login'
 import SignUp from './pages/SignUp'
@@ -19,12 +20,15 @@ const titles = {
   '/login': 'Log in · Tomato.',
   '/signup': 'Create an account · Tomato.',
   '/admin/login': 'Admin login · Tomato.',
+  '/admin': 'Admin Panel · Tomato.',
   '/order': 'Your order · Tomato.',
 }
 
 function Layout() {
   const { pathname } = useLocation()
   const hideFooter = pathname === '/login' || pathname === '/signup' || pathname === '/admin/login'
+  // The admin panel has its own header, so the site nav and footer stay off that page.
+  const isAdminPanel = pathname === '/admin'
 
   useEffect(() => {
     document.title = titles[pathname] ?? 'Tomato.'
@@ -32,17 +36,19 @@ function Layout() {
 
   return (
     <div className="flex min-h-screen flex-col bg-white font-sans text-neutral-900">
-      <a
-        href="#main"
-        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:rounded-full focus:bg-white focus:px-4 focus:py-2 focus:shadow"
-      >
-        Skip to content
-      </a>
-      <Navbar />
+      {!isAdminPanel && (
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:rounded-full focus:bg-white focus:px-4 focus:py-2 focus:shadow"
+        >
+          Skip to content
+        </a>
+      )}
+      {!isAdminPanel && <Navbar />}
       <main id="main" className="flex-1">
         <Outlet />
       </main>
-      {hideFooter ? null : <Footer />}
+      {hideFooter || isAdminPanel ? null : <Footer />}
     </div>
   )
 }
@@ -61,6 +67,7 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<SignUp />} />
               <Route path="/admin/login" element={<AdminLogin />} />
+              <Route path="/admin" element={<AdminDashboard />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Route>
           </Routes>
