@@ -7,6 +7,9 @@ import Navbar from './components/Navbar'
 import { AuthProvider } from './context/AuthContext'
 import { CartProvider } from './context/CartContext'
 import Home from './pages/Home'
+import AdminLogin from './pages/AdminLogin'
+import Login from './pages/Login'
+import SignUp from './pages/SignUp'
 
 const titles = {
   '/': 'Tomato.',
@@ -15,12 +18,13 @@ const titles = {
   '/contact': 'Contact us · Tomato.',
   '/login': 'Log in · Tomato.',
   '/signup': 'Create an account · Tomato.',
+  '/admin/login': 'Admin login · Tomato.',
   '/order': 'Your order · Tomato.',
 }
 
 function Layout() {
   const { pathname } = useLocation()
-  const hideFooter = pathname === '/login' || pathname === '/signup'
+  const hideFooter = pathname === '/login' || pathname === '/signup' || pathname === '/admin/login'
 
   useEffect(() => {
     document.title = titles[pathname] ?? 'Tomato.'
@@ -54,6 +58,9 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<SignUp />} />
+              <Route path="/admin/login" element={<AdminLogin />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Route>
           </Routes>
