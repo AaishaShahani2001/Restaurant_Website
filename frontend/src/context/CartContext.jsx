@@ -1,9 +1,10 @@
-/* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { CartContext } from './cart-context'
 
 // Shared cart for the order page and the menu.
-const CartContext = createContext(null)
 const CART_KEY = 'tomato_cart'
+// Placed orders, kept so a signed-in user can open them later.
+const ORDERS_KEY = 'tomato_orders'
 
 // Keep only bag lines that still have an id and a quantity above zero.
 function readCart() {
@@ -18,9 +19,20 @@ function readCart() {
   }
 }
 
+// Load saved orders, or an empty list if storage is missing or invalid.
+function readOrders() {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(ORDERS_KEY) || '[]')
+    return Array.isArray(parsed) ? parsed : []
+  } catch {
+    return []
+  }
+}
+
 export function CartProvider({ children }) {
   const [items, setItems] = useState(readCart)
   const [notice, setNotice] = useState('')
+  const [orders, setOrders] = useState(readOrders)
 
   // Write the bag back to storage whenever its lines change.
   useEffect(() => {
@@ -65,24 +77,35 @@ export function CartProvider({ children }) {
     setItems((current) => current.filter((item) => item.id !== id))
   }
 
-  // Empty the cart and keep the confirmation for the order page.
-  function placeOrder(message) {
+  // Save the placed order, empty the cart, and keep the confirmation.
+  function placeOrder(message, order) {
+    // Store a signed-in checkout so My orders and the admin list can read it.
+    if (order) {
+      // New orders always start as Food Processing until an admin changes them.
+      const next = [
+        { id: String(Date.now()), at: new Date().toISOString(), ...order, status: 'Food Processing' },
+        ...readOrders(),
+      ]
+      localStorage.setItem(ORDERS_KEY, JSON.stringify(next))
+      setOrders(next)
+    }
+    // Clear the bag after the order is kept.
     setItems([])
     setNotice(message)
   }
 
+  // Write a new status onto one order so the customer page can show it.
+  function updateOrderStatus(id, status) {
+    const next = readOrders().map((order) => (order.id === id ? { ...order, status } : order))
+    localStorage.setItem(ORDERS_KEY, JSON.stringify(next))
+    setOrders(next)
+  }
+
   return (
     <CartContext.Provider
-      value={{ items, count, notice, addItem, setQty, changeQty, removeItem, placeOrder }}
+      value={{ items, count, notice, orders, addItem, setQty, changeQty, removeItem, placeOrder, updateOrderStatus }}
     >
       {children}
     </CartContext.Provider>
   )
-}
-
-// Fail loudly if a screen reads the bag outside the provider.
-export function useCart() {
-  const context = useContext(CartContext)
-  if (!context) throw new Error('useCart must be used within CartProvider')
-  return context
 }

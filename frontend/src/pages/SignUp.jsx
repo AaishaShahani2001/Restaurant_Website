@@ -41,7 +41,7 @@ function SignUp() {
     return (
         <section className="mx-auto grid min-h-[calc(100vh-72px)] w-full max-w-6xl items-center gap-8 px-5 py-8 sm:px-6 lg:grid-cols-2 lg:gap-16 lg:py-10">
             <AuthShowcase />
-            <div className="mx-auto w-full max-w-[420px]">
+            <div className="mx-auto w-full max-w-105">
                 <h1 className="text-[32px] font-bold tracking-tight text-neutral-900">Create an account</h1>
                 <p className="mt-2 text-sm text-neutral-500">Join us for delicious food and memorable moments.</p>
 
@@ -127,7 +127,7 @@ function SignUp() {
                                 setAgreed(event.target.checked)
                                 setErrors((current) => ({ ...current, agreed: undefined }))
                             }}
-                            className="mt-0.5 h-4 w-4 shrink-0 accent-[#ff4d1c]"
+                            className="mt-0.5 h-4 w-4 shrink-0 accent-tomato"
                         />
                         <span>By continuing, I agree to the terms of use &amp; privacy policy.</span>
                     </label>

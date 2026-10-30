@@ -2,7 +2,7 @@ import plate from '../assets/bg.jpg'
 
 function AuthShowcase() {
   return (
-    <div className="relative min-h-[320px] overflow-hidden rounded-2xl lg:min-h-[580px]">
+    <div className="relative min-h-80 overflow-hidden rounded-2xl lg:min-h-145">
       {/* Food photo behind the account-page headline. */}
       <img
         src={plate}
@@ -19,7 +19,7 @@ function AuthShowcase() {
       />
       {/* Headline block sits at the bottom of the photo. */}
       <div
-        className="relative flex min-h-[320px] flex-col justify-end p-7 text-white sm:p-9 lg:min-h-[580px] lg:p-10"
+        className="relative flex min-h-80 flex-col justify-end p-7 text-white sm:p-9 lg:min-h-145 lg:p-10"
         style={{ textShadow: '0 2px 16px rgba(0,0,0,0.45)' }}
       >
         <p className="text-[11px] font-medium tracking-[0.22em] text-white/80">A SEAT AT OUR TABLE</p>
@@ -28,7 +28,7 @@ function AuthShowcase() {
           <br />
           Great company.
         </h2>
-        <p className="mt-4 max-w-[250px] text-sm leading-relaxed text-white/80">
+        <p className="mt-4 max-w-62.5 text-sm leading-relaxed text-white/80">
           Your favourite flavours, a warm welcome, and something delicious to look forward to.
         </p>
       </div>

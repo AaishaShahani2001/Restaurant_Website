@@ -56,7 +56,7 @@ function AdminLogin() {
 
   return (
     <section className="mx-auto flex min-h-[calc(100vh-72px)] w-full max-w-6xl items-center justify-center px-5 py-8 sm:px-6">
-      <div className="w-full max-w-[420px]">
+      <div className="w-full max-w-105">
         <h1 className="text-[32px] font-bold tracking-tight text-neutral-900">Admin login</h1>
         <p className="mt-2 text-sm text-neutral-500">Sign in with the restaurant admin account.</p>
         {/* Show the fixed account so the portal can be opened without reading the source. */}

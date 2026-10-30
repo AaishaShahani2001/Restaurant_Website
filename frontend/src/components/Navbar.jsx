@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { useCart } from '../context/CartContext'
+import { useCart } from '../context/cart-context'
 
 // Primary routes shown in the desktop bar and the mobile menu.
 const links = [
@@ -59,27 +59,40 @@ function Navbar() {
     const { user, logout } = useAuth()
     const { count } = useCart()
     const navigate = useNavigate()
-    // Mobile menu, search field, and the text typed into it.
+    // Mobile menu, search field, profile menu, and the text typed into search.
     const [menuOpen, setMenuOpen] = useState(false)
     const [searchOpen, setSearchOpen] = useState(false)
+    const [profileOpen, setProfileOpen] = useState(false)
     const [query, setQuery] = useState('')
     const searchRef = useRef(null)
+    const profileRef = useRef(null)
 
     // Move focus into the search field as soon as it opens.
     useEffect(() => {
         if (searchOpen) searchRef.current?.focus()
     }, [searchOpen])
 
-    // Escape closes the search field and the mobile menu.
+    // Escape closes search, the mobile menu, and the profile menu.
     useEffect(() => {
         function onKey(event) {
             if (event.key !== 'Escape') return
             setSearchOpen(false)
             setMenuOpen(false)
+            setProfileOpen(false)
         }
         window.addEventListener('keydown', onKey)
         return () => window.removeEventListener('keydown', onKey)
     }, [])
+
+    // A click outside the profile menu closes it.
+    useEffect(() => {
+        if (!profileOpen) return
+        function onPointer(event) {
+            if (!profileRef.current?.contains(event.target)) setProfileOpen(false)
+        }
+        document.addEventListener('mousedown', onPointer)
+        return () => document.removeEventListener('mousedown', onPointer)
+    }, [profileOpen])
 
     // Send the trimmed query to the menu, or open the full menu if it is empty.
     function submitSearch(event) {
@@ -176,17 +189,40 @@ function Navbar() {
                         )}
                     </Link>
 
-                    {/* Signed-in users get their name and log out; everyone else gets sign in. */}
+                    {/* Signed-in users get a profile menu; everyone else gets sign in. */}
                     {user ? (
-                        <div className="flex items-center gap-2">
-                            <span className="hidden text-sm font-medium text-neutral-800 sm:inline">{user.name.split(' ')[0]}</span>
+                        <div className="relative" ref={profileRef}>
                             <button
                                 type="button"
-                                onClick={logout}
-                                className="rounded-full border border-neutral-300 px-4 py-1.5 text-sm text-neutral-800 transition hover:border-tomato hover:text-tomato"
+                                aria-label="Account menu"
+                                aria-expanded={profileOpen}
+                                onClick={() => setProfileOpen((open) => !open)}
+                                className="grid h-9 w-9 place-items-center rounded-full bg-tomato text-sm font-semibold text-white"
                             >
-                                log out
+                                {user.name.trim().charAt(0).toUpperCase()}
                             </button>
+                            {/* My orders and logout only while the icon is open. */}
+                            {profileOpen && (
+                                <div className="absolute right-0 z-50 mt-2 w-40 rounded-lg border border-neutral-200 bg-white py-1 shadow-md">
+                                    <Link
+                                        to="/my-orders"
+                                        className="block px-4 py-2 text-sm text-neutral-800 hover:bg-neutral-50"
+                                        onClick={() => setProfileOpen(false)}
+                                    >
+                                        My orders
+                                    </Link>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setProfileOpen(false)
+                                            logout()
+                                        }}
+                                        className="block w-full px-4 py-2 text-left text-sm text-neutral-800 hover:bg-neutral-50"
+                                    >
+                                        Logout
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     ) : (
                         <Link

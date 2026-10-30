@@ -10,7 +10,12 @@ import Home from './pages/Home'
 import AdminDashboard from './pages/AdminDashboard'
 import AdminLogin from './pages/AdminLogin'
 import Login from './pages/Login'
+import MyOrders from './pages/MyOrders'
 import SignUp from './pages/SignUp'
+import FoodDetails from './pages/FoodDetails'
+import Menu from './pages/Menu'
+import OrderDetails from './pages/OrderDetails'
+import Payment from './pages/Payment'
 
 const titles = {
   '/': 'Tomato.',
@@ -22,6 +27,8 @@ const titles = {
   '/admin/login': 'Admin login · Tomato.',
   '/admin': 'Admin Panel · Tomato.',
   '/order': 'Your order · Tomato.',
+  '/payment': 'Payment · Tomato.',
+  '/my-orders': 'My orders · Tomato.',
 }
 
 function Layout() {
@@ -62,10 +69,15 @@ function App() {
           <Routes>
             <Route element={<Layout />}>
               <Route path="/" element={<Home />} />
+              <Route path="/menu" element={<Menu />} />
+              <Route path="/food/:id" element={<FoodDetails />} />
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<SignUp />} />
+              <Route path="/order" element={<OrderDetails />} />
+              <Route path="/payment" element={<Payment />} />
+              <Route path="/my-orders" element={<MyOrders />} />
               <Route path="/admin/login" element={<AdminLogin />} />
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="*" element={<Navigate to="/" replace />} />

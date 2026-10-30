@@ -59,7 +59,7 @@ function Home() {
         <img
           src={plate}
           alt="Burger, chili fries, and slaw on a wooden board"
-          className="h-[420px] w-full rounded-3xl object-cover object-[82%_center]"
+          className="h-105 w-full rounded-3xl object-cover object-[82%_center]"
         />
       </section>
 
@@ -67,7 +67,7 @@ function Home() {
       <section className="bg-[#fff7f4]">
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 py-16 sm:px-6 lg:grid-cols-2">
           <div className="flex items-center justify-center overflow-hidden rounded-3xl bg-neutral-950">
-            <img src={stack} alt="Double bacon cheeseburger with sesame seeds" className="h-[380px] w-full object-contain" />
+            <img src={stack} alt="Double bacon cheeseburger with sesame seeds" className="h-95 w-full object-contain" />
           </div>
           <div>
             <p className="text-xs font-semibold tracking-[0.2em] text-tomato">HOUSE FAVOURITE</p>
